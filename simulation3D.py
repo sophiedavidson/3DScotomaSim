@@ -94,6 +94,7 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
 
     screen = screenAttributes.get("Screen")
     background = screenAttributes.get("Background")
+    background.scale = 0.5
     scotomaRadius = experimentAttributes.get("radius")
     separation = experimentAttributes.get("separation")
 
@@ -101,6 +102,7 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
+    background.draw()
     (x1, y1) = transformEyeData(x, y, experimentAttributes.get("location"))
     scotomaLeft = shapes.Circle(x1, y1, scotomaRadius, color=(0, 0, 0))
     scotomaLeft.draw()
@@ -110,9 +112,9 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
+    drawTags(screenAttributes)
     scotomaLeft = shapes.Circle(x1+separation, y1, scotomaRadius, color=(0, 0, 0))
     scotomaLeft.draw()
-    drawTags(screenAttributes)
 
 
 # Launch the simulation screen ----------------------------------------------------------

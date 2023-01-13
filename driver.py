@@ -6,7 +6,6 @@
 # Imports
 import os
 import pyglet
-import pyautogui
 # Modules
 from dialogue import launchDialogue
 from pupilCaptureAccess import launchConnection
@@ -16,7 +15,7 @@ from simulation3D import launchSimulation
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)  # Ensure that relative paths start from the same directory as this script
 
-(screenSize) = pyautogui.size()
+screenSize = (1280,720)
 aprilTagSize = (226, 226)
 
 
@@ -37,7 +36,8 @@ tags = (tag1, tag2, tag3, tag4)
 backgroundImg = pyglet.resource.image("media/background.jpg")
 background = pyglet.sprite.Sprite(backgroundImg, 0, 0)
 # All Screen Details
-screenAttributes = {"AprilTagSize": aprilTagSize,
+screenAttributes = {"ScreenSize":screenSize,
+                    "AprilTagSize": aprilTagSize,
                     "Background": background,
                     "Tags": tags
                     }
@@ -56,7 +56,7 @@ def main():
     sub = None
     if experimentAttributes.get("tracker") == "Pupil Labs Core":
         sub = launchConnection()
-    experimentAttributes["sub"] = sub
+        experimentAttributes["sub"] = sub
 
     launchSimulation(screenAttributes, experimentAttributes)
 

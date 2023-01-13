@@ -3,8 +3,8 @@
 
 # This module will create a dialogue box to determine key information about the
 # participant and the experiment parameters.
-import psychopy
-from psychopy import gui
+#import psychopy
+#from psychopy import gui
 
 # ---- Defaults------------------------------------------------------------------
 name = "New Participant"
@@ -17,6 +17,7 @@ tracker = "Mouse"
 # ---- Make the Dialogue Box ---------------------------------------------------
 
 def launchDialogue():
+    """
     # Create Dialogue
     dlg = gui.Dlg(title="Experiment Information", pos=(200, 400))
     # participant information
@@ -39,5 +40,8 @@ def launchDialogue():
         pass
     else:
         print('User cancelled')  # ...or False, if they hit Cancel
+
+    """
+    thisInfo = ("Sophie", "20", 50, "Central","Mouse", 5 )
 
     return thisInfo  # thisInfo contains (name,age,scotoma radius, location, tracker)
