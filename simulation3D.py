@@ -97,7 +97,7 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     scotomaRadius = experimentAttributes.get("radius")
     separation = experimentAttributes.get("separation")
 
-    # clear screen
+    # Left Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
@@ -106,13 +106,12 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     scotomaLeft.draw()
     drawTags(screenAttributes)
 
+    # Right Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
     scotomaLeft = shapes.Circle(x1+separation, y1, scotomaRadius, color=(0, 0, 0))
     scotomaLeft.draw()
-
-    # display the april tags
     drawTags(screenAttributes)
 
 
@@ -124,10 +123,17 @@ def launchSimulation(screenAttributes, experimentAttributes):
 
     @simulationWindow.event
     def on_draw():
-        (x, y) = getGazePosition(experimentAttributes.get("sub"), surfaceName)
-        x = x * screen_x
-        y = screen_y - y * screen_y
-        drawAll(x, y, screenAttributes, experimentAttributes)
+        if experimentAttributes.get("Tracker") == "Pupil Labs Core":
+            (x, y) = getGazePosition(experimentAttributes.get("sub"), surfaceName)
+            x = x * screen_x
+            y = screen_y - y * screen_y
+            drawAll(x, y, screenAttributes, experimentAttributes)
+        else:
+            @simulationWindow.event
+            def on_mouse_motion(x, y, dx, dy):
+                x = x * screen_x
+                y = screen_y - y * screen_y
+                drawAll(x, y, screenAttributes, experimentAttributes)
 
     pyglet.app.run()
 
