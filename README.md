@@ -12,7 +12,7 @@
 
  <h2>How to Install Dependencies </h2>
  
- using Windows Powershell, type:
+ Uing Windows Powershell, type:
  
   ```
   py -m pip install pyglet, tkinter, os, zmq, msgpack, socket
@@ -31,7 +31,7 @@
 Ensure that the Network API and Surface Tracking plugins are selected, and that both eyes are selected in the general settings pane. 
 
 
-** 3D Settings **
+**3D Settings**
 In order for the 3D functionality to work as expected please ensure the following settings:
 1280x800, True Colour (32 bit), 120Hz. 
 In NVIDIA  Control Panel, reset 3D settings to default, then ensure that Stereo-enable is On, Swap-mode is set to "application controlled, and Stereo-Swap-Eyes is Off. 
