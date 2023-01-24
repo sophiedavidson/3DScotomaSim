@@ -36,4 +36,5 @@ In order for the 3D functionality to work as expected please ensure the followin
 1280x800, True Colour (32 bit), 120Hz. 
 In NVIDIA  Control Panel, reset 3D settings to default, then ensure that Stereo-enable is On, Swap-mode is set to "application controlled, and Stereo-Swap-Eyes is Off. 
 
+Note: If using remote access, ensure firewalls are turned off as this can block the incoming/outgoing signals
 
