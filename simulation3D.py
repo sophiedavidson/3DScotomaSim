@@ -97,7 +97,6 @@ def drawTags(screenAttributes):
 def drawAll(x, y, screenAttributes, experimentAttributes):
     # get details required
 
-    screen = screenAttributes.get("Screen")
     background = screenAttributes.get("Background")
     background.scale = 0.5
     scotomaRadius = experimentAttributes.get("radius")

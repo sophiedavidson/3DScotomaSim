@@ -7,13 +7,23 @@ import socket
 from msgpack import loads
 
 
+def getIP():
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    return IPAddr
+
 def launchConnection():
     context = zmq.Context()
 
 
     # open a req port to talk to pupil
+<<<<<<< Updated upstream
     addr = "172.20.10.2"  # remote ip or localhost
     req_port = "50020"  # same as in the pupil remote gui
+=======
+    addr = "169.254.45.83"  # remote ip or localhost
+    req_port = "50060"  # same as in the pupil remote gui
+>>>>>>> Stashed changes
     req = context.socket(zmq.REQ)
     req.connect("tcp://{}:{}".format(addr, req_port))
     # ask for the sub port
@@ -21,6 +31,7 @@ def launchConnection():
     print("trying connection")
     sub_port = req.recv_string()
     print("connected")
+
 
     # open a sub port to listen to pupil
     sub = context.socket(zmq.SUB)
