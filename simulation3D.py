@@ -8,17 +8,18 @@
 # Imports
 import pyglet
 import tkinter as tk
-import time
+
 from tkinter import messagebox
 from pyglet.gl import *
 from pyglet.window import NoSuchConfigException
 from pyglet import shapes
+
+# Module Imports
 from pupilCaptureAccess import getGazePosition
 
-global x,y, surfaceCalibrated
-x=50
-y=50
-surfaceCalibrated = False
+# Globals
+global x, y, surfaceCalibrated
+
 
 def showMessage(message):
     # Display a warning message to the user
@@ -44,6 +45,7 @@ def createWindow(isStereoscopic):
     window = None
 
     try:
+        # note that if isStereoscopic, tries to display on secondary screen ([1])
         window = pyglet.window.Window(screen=screens[isStereoscopic], config=config, fullscreen=True)
         window.set_caption("Opacity Fusion Test")
     except IndexError:
@@ -58,28 +60,28 @@ def createWindow(isStereoscopic):
 
 
 # Moves the scotoma to a relative location.
-def transformEyeData(x, y, location):
+def transformEyeData(thisX, thisY, location):
     if location == "N":
-        y = y - 50
+        thisY = thisY - 50
     elif location == "NE":
-        x = x + 50
-        y = y - 50
+        thisX = thisX + 50
+        thisY = thisY - 50
     elif location == "E":
-        x = x + 50
+        thisX = thisX + 50
     elif location == "SE":
-        x = x + 50
-        y = y + 50
+        thisX = thisX + 50
+        thisY = thisY + 50
     elif location == "S":
-        y = y + 50
+        thisY = thisY + 50
     elif location == "SW":
-        x = x - 50
-        y = y + 50
+        thisX = thisX - 50
+        thisY = thisY + 50
     elif location == "W":
-        x = x - 50
+        thisX = thisX - 50
     elif location == "NW":
-        x = x - 50
-        y = y - 50
-    return x, y
+        thisX = thisX - 50
+        thisY = thisY - 50
+    return thisX, thisY
 
 
 # Draws the april tags
@@ -94,9 +96,7 @@ def drawTags(screenAttributes):
 
 
 # Draws all of the foreground components
-def drawAll(x, y, screenAttributes, experimentAttributes):
-    # get details required
-
+def drawAll(currentX, currentY, screenAttributes, experimentAttributes):
     background = screenAttributes.get("Background")
     background.scale = 0.5
     scotomaRadius = experimentAttributes.get("radius")
@@ -106,29 +106,31 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
-    (x1, y1) = transformEyeData(x, y, experimentAttributes.get("location"))
-    scotomaLeft = shapes.Circle(x1, y1, 20, color=(0, 0, 0))
+    (adjustedX, adjustedY) = transformEyeData(currentX, currentY, experimentAttributes.get("location"))
+    scotomaLeft = shapes.Circle(adjustedX, adjustedY, scotomaRadius, color=(0, 0, 0))
     scotomaLeft.draw()
     drawTags(screenAttributes)
-
 
     # Right Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
     drawTags(screenAttributes)
-    scotomaRight = shapes.Circle(x1+separation, y1, scotomaRadius, color=(0, 0, 0))
+    scotomaRight = shapes.Circle(adjustedX + separation, adjustedY, scotomaRadius, color=(0, 0, 0))
     scotomaRight.draw()
+
 
 def setSurfaceCalibrated(dt):
     global surfaceCalibrated
     surfaceCalibrated = True
     print("done")
+    return dt
 
 
 # Launch the simulation screen ----------------------------------------------------------
 def launchSimulation(screenAttributes, experimentAttributes):
     global surfaceCalibrated
+    surfaceCalibrated = False
     simulationWindow = createWindow(1)
     simulationWindow.set_mouse_visible(False)
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
@@ -136,22 +138,27 @@ def launchSimulation(screenAttributes, experimentAttributes):
 
     @simulationWindow.event
     def on_draw():
-        global surfaceCalibrated
-        if surfaceCalibrated == False:
-            x,y = 0,0
-        if surfaceCalibrated == True:
-            (x,y)=getGazePosition(experimentAttributes.get("sub"),"surface")
-        x=x*screen_x
-        y=y*screen_y
+        (x, y) = (0, 0)
+        if experimentAttributes.get("Tracker") == "Mouse":
+            @simulationWindow.event
+            def on_mouse_motion(thisX, thisY, dx, dy):
+                global x, y
+                x = thisX  # * screen_x
+                y = thisY   # screen_y - thisY * screen_y
+                return dx, dy
+        else:
+            global surfaceCalibrated
+            if not surfaceCalibrated:
+                pass
+            else:
+                (x, y) = getGazePosition(experimentAttributes.get("sub"), surfaceName)
+            x = x*screen_x
+            y = y*screen_y
+
         drawAll(x, y, screenAttributes, experimentAttributes)
-    """
-    @simulationWindow.event
-    def on_mouse_motion(thisX, thisY, dx, dy):
-        global x, y
-        x = thisX #* screen_x
-        y = thisY   #screen_y - thisY * screen_y
-    """
+
+    # TODO - Wait until first correct data point is received to start main loop rather than just waiting 5sec.
+    # TODO - Fix error where freezes when no data is received (ie - check if none case)
     pyglet.clock.schedule_once(setSurfaceCalibrated, 5)
 
     pyglet.app.run()
-

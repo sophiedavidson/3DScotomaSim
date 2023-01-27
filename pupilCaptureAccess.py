@@ -12,26 +12,24 @@ def getIP():
     IPAddr = socket.gethostbyname(hostname)
     return IPAddr
 
-def launchConnection():
+
+def launchConnection(experimentAttributes):
     context = zmq.Context()
 
-
-    # open a req port to talk to pupil
-<<<<<<< Updated upstream
-    addr = "172.20.10.2"  # remote ip or localhost
-    req_port = "50020"  # same as in the pupil remote gui
-=======
-    addr = "169.254.45.83"  # remote ip or localhost
-    req_port = "50060"  # same as in the pupil remote gui
->>>>>>> Stashed changes
+    if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":
+        ipTcpDetails = experimentAttributes.get("remoteDetails")
+        addr = ipTcpDetails[0]
+        req_port = ipTcpDetails[1]
+    else:
+        addr = "127.0.0.1"
+        req_port = "50020"  # same as in the pupil remote gui
     req = context.socket(zmq.REQ)
     req.connect("tcp://{}:{}".format(addr, req_port))
     # ask for the sub port
     req.send_string("SUB_PORT")
-    print("trying connection")
+    print("Attempting Connection....")
     sub_port = req.recv_string()
-    print("connected")
-
+    print("Connection Successful")
 
     # open a sub port to listen to pupil
     sub = context.socket(zmq.SUB)
@@ -47,6 +45,7 @@ def getGazePosition(sub, surfaceName):
 
     try:
         topic = sub.recv_string()
+        print(topic)
         msg = sub.recv()  # bytes
         surfaces = loads(msg, raw=False)
         filtered_surface = {
@@ -58,9 +57,8 @@ def getGazePosition(sub, surfaceName):
                 norm_gp_x, norm_gp_y = gaze_pos["norm_pos"]
 
         except:
-            pass
+            print("getting gaze positions on surface failed")
     except:
-        pass
+        print("getting surface not possible")
 
     return norm_gp_x, norm_gp_y
-
