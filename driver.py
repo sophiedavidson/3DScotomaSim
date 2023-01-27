@@ -23,7 +23,7 @@ aprilTagSize = (226, 226)
 tag1Img = pyglet.resource.image("media/tag1.jpg")
 tag2Img = pyglet.resource.image("media/tag2.jpg")
 tag3Img = pyglet.resource.image("media/tag3.jpg")
-tag4Img = pyglet.resource.image("media/tag3.jpg")
+tag4Img = pyglet.resource.image("media/tag4.jpg")
 
 tag1 = pyglet.sprite.Sprite(tag1Img, 0, 0)
 tag2 = pyglet.sprite.Sprite(tag2Img, 0, screenSize[1] - aprilTagSize[1])

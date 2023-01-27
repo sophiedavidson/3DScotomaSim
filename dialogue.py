@@ -42,6 +42,6 @@ def launchDialogue():
         print('User cancelled')  # ...or False, if they hit Cancel
 
     """
-    thisInfo = ("Sophie", "20", 50, "Central","Mouse", 5 )
+    thisInfo = ("Sophie", "20", 50, "Central","Pupil Labs Core", 15 )
 
     return thisInfo  # thisInfo contains (name,age,scotoma radius, location, tracker)

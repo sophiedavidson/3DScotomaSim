@@ -8,12 +8,17 @@
 # Imports
 import pyglet
 import tkinter as tk
+import time
 from tkinter import messagebox
 from pyglet.gl import *
 from pyglet.window import NoSuchConfigException
 from pyglet import shapes
 from pupilCaptureAccess import getGazePosition
 
+global x,y, surfaceCalibrated
+x=50
+y=50
+surfaceCalibrated = False
 
 def showMessage(message):
     # Display a warning message to the user
@@ -102,40 +107,52 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
-    background.draw()
     (x1, y1) = transformEyeData(x, y, experimentAttributes.get("location"))
-    scotomaLeft = shapes.Circle(x1, y1, scotomaRadius, color=(0, 0, 0))
+    scotomaLeft = shapes.Circle(x1, y1, 20, color=(0, 0, 0))
     scotomaLeft.draw()
     drawTags(screenAttributes)
+
 
     # Right Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
     drawTags(screenAttributes)
-    scotomaLeft = shapes.Circle(x1+separation, y1, scotomaRadius, color=(0, 0, 0))
-    scotomaLeft.draw()
+    scotomaRight = shapes.Circle(x1+separation, y1, scotomaRadius, color=(0, 0, 0))
+    scotomaRight.draw()
+
+def setSurfaceCalibrated(dt):
+    global surfaceCalibrated
+    surfaceCalibrated = True
+    print("done")
 
 
 # Launch the simulation screen ----------------------------------------------------------
 def launchSimulation(screenAttributes, experimentAttributes):
+    global surfaceCalibrated
     simulationWindow = createWindow(1)
+    simulationWindow.set_mouse_visible(False)
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
     surfaceName = "surface"
 
     @simulationWindow.event
     def on_draw():
-        if experimentAttributes.get("Tracker") == "Pupil Labs Core":
-            (x, y) = getGazePosition(experimentAttributes.get("sub"), surfaceName)
-            x = x * screen_x
-            y = screen_y - y * screen_y
-            drawAll(x, y, screenAttributes, experimentAttributes)
-        else:
-            @simulationWindow.event
-            def on_mouse_motion(x, y, dx, dy):
-                x = x * screen_x
-                y = screen_y - y * screen_y
-                drawAll(x, y, screenAttributes, experimentAttributes)
+        global surfaceCalibrated
+        if surfaceCalibrated == False:
+            x,y = 0,0
+        if surfaceCalibrated == True:
+            (x,y)=getGazePosition(experimentAttributes.get("sub"),"surface")
+        x=x*screen_x
+        y=y*screen_y
+        drawAll(x, y, screenAttributes, experimentAttributes)
+    """
+    @simulationWindow.event
+    def on_mouse_motion(thisX, thisY, dx, dy):
+        global x, y
+        x = thisX #* screen_x
+        y = thisY   #screen_y - thisY * screen_y
+    """
+    pyglet.clock.schedule_once(setSurfaceCalibrated, 5)
 
     pyglet.app.run()
 
