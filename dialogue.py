@@ -11,6 +11,7 @@ date: 1/2023
 
 # Imports
 import tkinter as tk
+import sys
 from tkinter import ttk
 from tkinter import messagebox
 
@@ -27,7 +28,7 @@ def showMessage(message):
 # ---- Make the Dialogue Box -------------------------------------------------------------------------------------------
 def launchDialogue():
     global thisInfo
-    thisInfo = ("Default", 0, 50, "Central", "Mouse", 5)
+
 
     def get_input():
         global thisInfo
@@ -75,6 +76,7 @@ def launchDialogue():
 
         # close window and return
         root.destroy()
+
         return input
 
     # Generating the dialogue window
@@ -137,11 +139,16 @@ def launchDialogue():
 
     root.mainloop()
 
-    return thisInfo  # thisInfo contains (name, age, scotomaRadius, location, tracker, offset)
+    try:
+        return thisInfo  # thisInfo contains (name, age, scotomaRadius, location, tracker, offset)
+    except NameError:
+        showMessage("Window Closed, Quitting Application")
+        exit()
 
 
 # Defines a separate dialogue to display if the user selects the Remote Option.
 def dialogueRemote():
+    global remoteInfo
     # Default
     remoteInfo = ("127.0.0.1", "50020")
 

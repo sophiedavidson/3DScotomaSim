@@ -54,7 +54,11 @@ screenAttributes = {"ScreenSize": screenSize,
 
 # Main Program ----------------------------------------------------------------------------------
 def main():
-    response = launchDialogue()  # collect experiment information from user
+    testing = int(input("Enter 1 for testing mode, enter 0 for regular"))
+    if testing:
+        response = ("Sophie", "20", 100, "Central", "Pupil Labs Core Remote",10)
+    else:
+        response = launchDialogue()  # collect experiment information from user
     # Collated experiment information
     experimentAttributes = {"name": response[0],
                             "age": response[1],
@@ -62,11 +66,15 @@ def main():
                             "location": response[3],
                             "tracker": response[4],
                             "separation": response[5]}
-    print(response[4])
     # if the trackers selected is remote, collect ip and port details
-    if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":
-        remoteDetails = dialogueRemote()
+    if testing:
+        remoteDetails = ("172.20.10.2", "50020")
         experimentAttributes["remoteDetails"] = remoteDetails
+
+    else:
+        if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":
+            remoteDetails = dialogueRemote()
+            experimentAttributes["remoteDetails"] = remoteDetails
 
     # if the tracker is an eyetracker, launch the connection to the eyetracker.
     if experimentAttributes.get("tracker") == "Pupil Labs Core Local" or "Pupil Labs Core Remote":

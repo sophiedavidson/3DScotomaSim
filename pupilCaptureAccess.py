@@ -18,6 +18,7 @@ def launchConnection(experimentAttributes):
     context = zmq.Context()
 
     # if the tracker is remote, get the details entered by the user.
+    print(experimentAttributes.get("tracker"))
     if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":
         ipTcpDetails = experimentAttributes.get("remoteDetails")
         addr = ipTcpDetails[0]
@@ -26,7 +27,6 @@ def launchConnection(experimentAttributes):
     else:
         addr = "127.0.0.1"
         req_port = "50020"  # same as in the pupil remote gui
-
     # connect using the defined address and port
     req = context.socket(zmq.REQ)
     req.connect("tcp://{}:{}".format(addr, req_port))
@@ -53,7 +53,6 @@ def getGazePosition(sub, surfaceName):
     try:
         # try to communicate with Pupil.
         topic = sub.recv_string()
-        print(topic)
         msg = sub.recv()  # bytes
         surfaces = loads(msg, raw=False)
         # accept the filtered gaze data from pupil
