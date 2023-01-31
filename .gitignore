@@ -11,3 +11,9 @@ dialogue.pyc
 *.pyc
 __pycache__/dialogue.cpython-38.pyc
 __pycache__/dialogue.cpython-38.pyc
+*.pyc
+__pycache__/simulation3D.cpython-38.pyc
+__pycache__/pupilCaptureAccess.cpython-38.pyc
+__pycache__/dialogue.cpython-38.pyc
+__pycache__/simulation3D.cpython-38.pyc
+*.pyc

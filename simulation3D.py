@@ -1,9 +1,16 @@
-# simulation.py
-# Sophie Davidson for IMT Atlantique, 2022
+"""
+file: simulation3D.py
+name: Sophie Davidson
+company:IMT Atlantique
+date: 1/2023
 
-# The following module generates the main screen of the program, including
-# the April Tag Markers to be used for configuration of the device, and the
-# simulated scotoma over a text background.
+    This module will generate a 3D stereoscopic window and display the simulated scotoma using data received from
+    the eyetracker. April tags are used to configure the surface as defined in the Pupil Capture application.
+    The scotoma can be adjusted using the control panel which is launched as a seperate window.
+
+"""
+
+# TODO - consider splitting this module into several modules.
 
 # Imports
 import pyglet
@@ -13,31 +20,30 @@ from tkinter import messagebox
 from pyglet.gl import *
 from pyglet.window import NoSuchConfigException
 from pyglet import shapes
-
-# Module Imports
+from controlPanel import ControlPanel
 from pupilCaptureAccess import getGazePosition
 
 # Globals
 global x, y, surfaceCalibrated
 
 
+# Display a warning message to the user
 def showMessage(message):
-    # Display a warning message to the user
     root = tk.Tk()
     root.withdraw()
     messagebox.showerror("Configuration", message)
 
 
+# Get all available screens as a screen object to be used for config
 def get_screens():
-    # Get all available screens as a screen object to be used for config
     display = pyglet.canvas.get_display()
     currentScreen = display.get_screens()
 
     return currentScreen
 
 
+# Configure a stereoscopic display window, warn user if screen could not be created
 def createWindow(isStereoscopic):
-    # Configure a stereoscopic display window, warn user if screen could not be created
     screens = get_screens()
     config = Config()
     config.stereo = isStereoscopic
@@ -48,14 +54,16 @@ def createWindow(isStereoscopic):
         # note that if isStereoscopic, tries to display on secondary screen ([1])
         window = pyglet.window.Window(screen=screens[isStereoscopic], config=config, fullscreen=True)
         window.set_caption("Opacity Fusion Test")
+
     except IndexError:
         showMessage("No secondary screen could be detected")
-
         quit()
+
     except NoSuchConfigException:
         showMessage("3D display could not be found, ensure display is 3D compatible")
         quit()
 
+    # If the window has been successfully made, return the window.
     return window
 
 
@@ -120,6 +128,8 @@ def drawAll(currentX, currentY, screenAttributes, experimentAttributes):
     scotomaRight.draw()
 
 
+# Set the surface calibrated variable to true after waiting for some time. This is time to allow the eye-tracker to
+# detect the april tags and surface.
 def setSurfaceCalibrated(dt):
     global surfaceCalibrated
     surfaceCalibrated = True
@@ -127,12 +137,12 @@ def setSurfaceCalibrated(dt):
     return dt
 
 
-# Launch the simulation screen ----------------------------------------------------------
+# Launch the simulation screen ----------------------------------------------------------------------------------------
 def launchSimulation(screenAttributes, experimentAttributes):
     global surfaceCalibrated
     surfaceCalibrated = False
     simulationWindow = createWindow(1)
-    simulationWindow.set_mouse_visible(False)
+    simulationWindow.set_mouse_visible(False)  # Hide the mouse cursor
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
     surfaceName = "surface"
 
@@ -159,6 +169,8 @@ def launchSimulation(screenAttributes, experimentAttributes):
 
     # TODO - Wait until first correct data point is received to start main loop rather than just waiting 5sec.
     # TODO - Fix error where freezes when no data is received (ie - check if none case)
+
+    # wait 5 seconds to begin simulation, this allows time for Pupil Capture to detect the surface.
     pyglet.clock.schedule_once(setSurfaceCalibrated, 5)
 
     pyglet.app.run()

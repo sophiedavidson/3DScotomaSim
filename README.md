@@ -8,7 +8,7 @@
 
 **Purpose:** Generate a simulated scotoma using Pupil Labs eye tracking technology and a 3D projector
 
-**Dependencies**: pyglet, tkinter, os, zmq, msgpack, socket
+**Dependencies**: pyglet, tkinter, os, zmq, msgpack
 
  <h2>How to Install Dependencies </h2>
  

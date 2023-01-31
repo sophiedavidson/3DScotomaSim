@@ -1,30 +1,83 @@
-# dialogue.py
-# Created by Sophie Davidson for IMT Atlantique, 2022
+"""
+file: dialogue.py
+name: Sophie Davidson
+company:IMT Atlantique
+date: 1/2023
 
-# This module will create a dialogue box to determine key information about the participant and experiment.
+    This module will generate a dialogue box which asks the user for the experiment information, and information about
+    the defaults for the simulation.
+
+"""
+
+# Imports
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
-# ---- Make the Dialogue Box ---------------------------------------------------
-
+# Globals
 global thisInfo, remoteInfo
 
 
+# Display a warning message to the user
+def showMessage(message):
+    root = tk.Tk()
+    root.withdraw()
+    messagebox.showerror("Configuration", message)
+
+# ---- Make the Dialogue Box -------------------------------------------------------------------------------------------
 def launchDialogue():
+    global thisInfo
     thisInfo = ("Default", 0, 50, "Central", "Mouse", 5)
 
     def get_input():
         global thisInfo
+        # Name: If nothing entered, prompts user to enter a name before submitting
         name = name_entry.get()
+        if name == "":
+            showMessage("Please enter a name")
+            root.mainloop()
+
+        # Age: If nothing entered, prompts user to enter a age before submitting
         age = age_entry.get()
+        if age == "":
+            showMessage("Please enter an age")
+            root.mainloop()
+
+        # Device: If nothing selected, prompts user to select a device before submitting
         device = device_var.get()
-        scotoma = scotoma_entry.get()
+        if device == "Tracker...":
+            showMessage("Please select a tracker")
+            root.mainloop()
+
+        # scotoma radius: If nothing entered, or value not a number, prompts user to enter a radius before submitting
+        try:
+            scotoma = int(scotoma_entry.get())
+
+        except ValueError:
+            showMessage("Please enter a integer value for scotoma radius")
+            root.mainloop()
+
+        # location: if no location selected, prompts user to enter a radius before submitting
         location = location_var.get()
-        offset = offset_entry.get()
-        thisInfo = (name, age, int(scotoma), location, device, int(offset))
+        if location == "Location...":
+            showMessage("Please enter a location")
+            root.mainloop()
+
+        # offset: if no offset entered, or not an integer value, prompts user to enter.
+        try:
+            offset = int(offset_entry.get())
+        except ValueError:
+            showMessage("Please enter a numerical value for offset")
+            root.mainloop()
+
+        # collate all
+        thisInfo = (name, age, scotoma, location, device, offset)
+
+        # close window and return
         root.destroy()
         return input
 
+    # Generating the dialogue window
     root = tk.Tk()
     root.title("Configurations")
     root.geometry("300x280")
@@ -87,15 +140,19 @@ def launchDialogue():
     return thisInfo  # thisInfo contains (name, age, scotomaRadius, location, tracker, offset)
 
 
+# Defines a separate dialogue to display if the user selects the Remote Option.
 def dialogueRemote():
+    # Default
     remoteInfo = ("127.0.0.1", "50020")
 
+    # Collect information from the dialogue form.
     def get_input():
         global remoteInfo
         remoteInfo = (ip_entry.get(), port_entry.get())
         root.destroy()
         return input
 
+    # Generate dialogue window
     root = tk.Tk()
     root.title("Remote Configuration")
     root.geometry("400x280")
@@ -121,6 +178,7 @@ def dialogueRemote():
     port_entry = ttk.Entry(root)
     port_entry.grid(row=4, column=0)
 
+    # When submit button is clicked, collect the inputs.
     submit_button = ttk.Button(root, text="Submit", command=get_input)
     submit_button.grid(row=8, column=0)
 
