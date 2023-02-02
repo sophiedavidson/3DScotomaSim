@@ -10,86 +10,28 @@ date: 1/2023
 
 """
 
-# TODO - consider splitting this module into several modules.
-
 # Imports
 import pyglet
 import tkinter as tk
-
-from tkinter import messagebox
 from pyglet.gl import *
-from pyglet.window import NoSuchConfigException
 from pyglet import shapes
+from threading import Thread
+
 from controlPanel import ControlPanel
 from pupilCaptureAccess import getGazePosition
+from windowManagement import createWindow
+from dataManagement import transformEyeData
 
 # Globals
 global x, y, surfaceCalibrated
+global control_panel, left_location_slider, left_opacity_slider, left_size_slider, left_hide_checkbox_var
+global right_location_slider, right_opacity_slider, right_size_slider, right_hide_checkbox_var
 
 
-# Display a warning message to the user
-def showMessage(message):
-    root = tk.Tk()
-    root.withdraw()
-    messagebox.showerror("Configuration", message)
-
-
-# Get all available screens as a screen object to be used for config
-def get_screens():
-    display = pyglet.canvas.get_display()
-    currentScreen = display.get_screens()
-
-    return currentScreen
-
-
-# Configure a stereoscopic display window, warn user if screen could not be created
-def createWindow(isStereoscopic):
-    screens = get_screens()
-    config = Config()
-    config.stereo = isStereoscopic
-    config.double_buffer = True
-    window = None
-
-    try:
-        # note that if isStereoscopic, tries to display on secondary screen ([1])
-        window = pyglet.window.Window(screen=screens[isStereoscopic], config=config, fullscreen=True)
-        window.set_caption("Opacity Fusion Test")
-
-    except IndexError:
-        showMessage("No secondary screen could be detected")
-        quit()
-
-    except NoSuchConfigException:
-        showMessage("3D display could not be found, ensure display is 3D compatible")
-        quit()
-
-    # If the window has been successfully made, return the window.
-    return window
-
-
-# Moves the scotoma to a relative location.
-def transformEyeData(thisX, thisY, location):
-    if location == "N":
-        thisY = thisY - 50
-    elif location == "NE":
-        thisX = thisX + 50
-        thisY = thisY - 50
-    elif location == "E":
-        thisX = thisX + 50
-    elif location == "SE":
-        thisX = thisX + 50
-        thisY = thisY + 50
-    elif location == "S":
-        thisY = thisY + 50
-    elif location == "SW":
-        thisX = thisX - 50
-        thisY = thisY + 50
-    elif location == "W":
-        thisX = thisX - 50
-    elif location == "NW":
-        thisX = thisX - 50
-        thisY = thisY - 50
-    return thisX, thisY
+def runControlWindow():
+    controlRoot = tk.Tk()
+    control_panel = ControlPanel(controlRoot)
+    controlRoot.mainloop()
 
 
 # Draws the april tags
@@ -114,16 +56,18 @@ def drawAll(currentX, currentY, screenAttributes, experimentAttributes):
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
+    background.draw()
     (adjustedX, adjustedY) = transformEyeData(currentX, currentY, experimentAttributes.get("location"))
     scotomaLeft = shapes.Circle(adjustedX, adjustedY, scotomaRadius, color=(0, 0, 0))
     scotomaLeft.draw()
-    drawTags(screenAttributes)
+    #drawTags(screenAttributes)
 
     # Right Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
-    drawTags(screenAttributes)
+    background.draw()
+    #drawTags(screenAttributes)
     scotomaRight = shapes.Circle(adjustedX + separation, adjustedY, scotomaRadius, color=(0, 0, 0))
     scotomaRight.draw()
 
@@ -139,12 +83,15 @@ def setSurfaceCalibrated(dt):
 
 # Launch the simulation screen ----------------------------------------------------------------------------------------
 def launchSimulation(screenAttributes, experimentAttributes):
+
     global surfaceCalibrated
     surfaceCalibrated = False
     simulationWindow = createWindow(1)
     simulationWindow.set_mouse_visible(False)  # Hide the mouse cursor
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
     surfaceName = "surface"
+    thread = Thread(target=runControlWindow)
+    thread.start()
 
     @simulationWindow.event
     def on_draw():
@@ -162,8 +109,8 @@ def launchSimulation(screenAttributes, experimentAttributes):
                 pass
             else:
                 (x, y) = getGazePosition(experimentAttributes.get("sub"), surfaceName)
-            x = x*screen_x
-            y = y*screen_y
+                x = x*screen_x
+                y = y*screen_y
 
         drawAll(x, y, screenAttributes, experimentAttributes)
 
@@ -174,3 +121,7 @@ def launchSimulation(screenAttributes, experimentAttributes):
     pyglet.clock.schedule_once(setSurfaceCalibrated, 5)
 
     pyglet.app.run()
+
+
+
+

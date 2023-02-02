@@ -33,16 +33,21 @@ tag2Img = pyglet.resource.image("media/tag2.jpg")
 tag3Img = pyglet.resource.image("media/tag3.jpg")
 tag4Img = pyglet.resource.image("media/tag4.jpg")
 
-tag1 = pyglet.sprite.Sprite(tag1Img, 0, 0)
-tag2 = pyglet.sprite.Sprite(tag2Img, 0, screenSize[1] - aprilTagSize[1])
-tag3 = pyglet.sprite.Sprite(tag3Img, screenSize[0] - aprilTagSize[1], 0)
-tag4 = pyglet.sprite.Sprite(tag4Img, screenSize[0] - aprilTagSize[1], screenSize[1] - aprilTagSize[1])
+background = pyglet.graphics.Batch()
+backgroundOrderGroup = pyglet.graphics.OrderedGroup()
+# Background Image
+backgroundImg = pyglet.resource.image("media/background.png")
+backgroundImgSprite = pyglet.sprite.Sprite(backgroundImg, 0, 0, batch=background, group=backgroundOrderGroup)
+
+tag1 = pyglet.sprite.Sprite(tag1Img, 0, 0, batch=background, group=backgroundOrderGroup)
+tag2 = pyglet.sprite.Sprite(tag2Img, 0, screenSize[1] - aprilTagSize[1], batch=background, group=backgroundOrderGroup)
+tag3 = pyglet.sprite.Sprite(tag3Img, screenSize[0] - aprilTagSize[1], 0, batch=background, group=backgroundOrderGroup)
+tag4 = pyglet.sprite.Sprite(tag4Img, screenSize[0] - aprilTagSize[1], screenSize[1] - aprilTagSize[1], batch=background, group=backgroundOrderGroup)
 
 tags = (tag1, tag2, tag3, tag4)
 
-# Background Image
-backgroundImg = pyglet.resource.image("media/background.png")
-background = pyglet.sprite.Sprite(backgroundImg, 0, 0)
+
+
 
 # Collating all screen details
 screenAttributes = {"ScreenSize": screenSize,

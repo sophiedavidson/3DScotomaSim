@@ -100,6 +100,7 @@ class ControlPanel:
         # self.sync_checkbox.pack()
 
 
+
 if __name__ == "__main__":
     root = tk.Tk()
     controlPanel = ControlPanel(root)
