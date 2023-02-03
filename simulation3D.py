@@ -6,6 +6,7 @@
 # simulated scotoma over a text background.
 
 # Imports
+from threading import Thread
 import pyglet
 import tkinter as tk
 import time
@@ -14,11 +15,12 @@ from pyglet.gl import *
 from pyglet.window import NoSuchConfigException
 from pyglet import shapes
 from pupilCaptureAccess import getGazePosition
-
+from controlWindow import ControlPanel
 global x,y, surfaceCalibrated
 x=50
 y=50
 surfaceCalibrated = False
+
 
 def showMessage(message):
     # Display a warning message to the user
@@ -42,6 +44,8 @@ def createWindow(isStereoscopic):
     config.stereo = isStereoscopic
     config.double_buffer = True
     window = None
+
+
 
     try:
         window = pyglet.window.Window(screen=screens[isStereoscopic], config=config, fullscreen=True)
@@ -127,13 +131,23 @@ def setSurfaceCalibrated(dt):
     print("done")
 
 
+def runControlPanel():
+    root = tk.Tk()
+    controlPanel = ControlPanel(root)
+    root.mainloop()
 # Launch the simulation screen ----------------------------------------------------------
+
+
 def launchSimulation(screenAttributes, experimentAttributes):
     global surfaceCalibrated
     simulationWindow = createWindow(1)
     simulationWindow.set_mouse_visible(False)
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
     surfaceName = "surface"
+    t1 = Thread(target=runControlPanel)
+    t1.start()
+
+
 
     @simulationWindow.event
     def on_draw():
