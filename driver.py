@@ -7,7 +7,7 @@
 import os
 import pyglet
 # Modules
-from dialogue import launchDialogue
+from dialogue import launchDialogue, dialogueRemote
 from pupilCaptureAccess import launchConnection
 from simulation3D import launchSimulation
 
@@ -54,9 +54,16 @@ def main():
                             "separation": response[5]}
 
     sub = None
-    if experimentAttributes.get("tracker") == "Pupil Labs Core":
-        sub = launchConnection()
+    if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":
+        print("remote")
+        remoteDetails = dialogueRemote()
+        sub = launchConnection(remoteDetails)
         experimentAttributes["sub"] = sub
+
+    if experimentAttributes.get("tracker") == "Pupil Labs Core Local":
+        localDetails = ("127.0.0.1", "50020")
+        sub = launchConnection(localDetails)
+        experimentAttributes["sub"]=sub
 
     launchSimulation(screenAttributes, experimentAttributes)
 
