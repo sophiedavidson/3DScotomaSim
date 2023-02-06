@@ -21,7 +21,6 @@ x=50
 y=50
 surfaceCalibrated = False
 
-
 def showMessage(message):
     # Display a warning message to the user
     root = tk.Tk()
@@ -100,7 +99,6 @@ def drawTags(screenAttributes):
 # Draws all of the foreground components
 def drawAll(x, y, screenAttributes, experimentAttributes):
     # get details required
-
     screen = screenAttributes.get("Screen")
     background = screenAttributes.get("Background")
     background.scale = 0.5
@@ -112,7 +110,7 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
     (x1, y1) = transformEyeData(x, y, experimentAttributes.get("location"))
-    scotomaLeft = shapes.Circle(x1, y1, 20, color=(0, 0, 0))
+    scotomaLeft = shapes.Circle(x1, y1, scotomaRadius, color=(0, 0, 0))
     scotomaLeft.draw()
     drawTags(screenAttributes)
 
@@ -134,18 +132,25 @@ def setSurfaceCalibrated(dt):
 def runControlPanel():
     root = tk.Tk()
     controlPanel = ControlPanel(root)
+    def getValues():
+        global scotomaLeftRadius
+        scotomaLeftRadius = controlPanel.left_size_slider
+        root.after(1000,getValues)
+
     root.mainloop()
 # Launch the simulation screen ----------------------------------------------------------
 
 
 def launchSimulation(screenAttributes, experimentAttributes):
     global surfaceCalibrated
+    t1 = Thread(target=runControlPanel)
+    t1.start()
+
     simulationWindow = createWindow(1)
     simulationWindow.set_mouse_visible(False)
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
     surfaceName = "surface"
-    t1 = Thread(target=runControlPanel)
-    t1.start()
+
 
 
 
