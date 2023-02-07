@@ -16,7 +16,7 @@ from pyglet.window import NoSuchConfigException
 from pyglet import shapes
 from pupilCaptureAccess import getGazePosition
 from controlWindow import ControlPanel
-global x,y, surfaceCalibrated
+global x,y, surfaceCalibrated, controlPanel
 x=50
 y=50
 surfaceCalibrated = False
@@ -61,27 +61,19 @@ def createWindow(isStereoscopic):
 
 
 # Moves the scotoma to a relative location.
-def transformEyeData(x, y, location):
-    if location == "N":
-        y = y - 50
-    elif location == "NE":
-        x = x + 50
-        y = y - 50
-    elif location == "E":
-        x = x + 50
-    elif location == "SE":
-        x = x + 50
-        y = y + 50
-    elif location == "S":
-        y = y + 50
-    elif location == "SW":
-        x = x - 50
-        y = y + 50
-    elif location == "W":
-        x = x - 50
-    elif location == "NW":
-        x = x - 50
-        y = y - 50
+def transformEyeData(x, y, eye):
+    global controlPanel
+    if eye == 0:
+        locationString = controlPanel.left_location_slider.dot_location.get()
+        locationString = locationString[1:-1].split(",")
+        (xAdd, yAdd)= (int(locationString[0]), int(locationString[1]))
+    else:
+        locationString = controlPanel.right_location_slider.dot_location.get()
+        locationString = locationString[1:-1].split(",")
+        (xAdd,yAdd)= (int(locationString[0]), int(locationString[1]))
+
+    x=x+xAdd
+    y=y+yAdd
     return x, y
 
 
@@ -99,19 +91,26 @@ def drawTags(screenAttributes):
 # Draws all of the foreground components
 def drawAll(x, y, screenAttributes, experimentAttributes):
     # get details required
+    (xLeft, yLeft) = transformEyeData(x,y,0)
+    (xRight, yRight)= transformEyeData(x,y,1)
+    global controlPanel
     screen = screenAttributes.get("Screen")
     background = screenAttributes.get("Background")
     background.scale = 0.5
-    scotomaRadius = experimentAttributes.get("radius")
-    separation = experimentAttributes.get("separation")
+    scotomaRadiusLeft = controlPanel.left_size_slider.get()
+    scotomaRadiusRight = controlPanel.right_size_slider.get()
+    separation = controlPanel.offset_slider.get()
+
 
     # Left Eye
+
+
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
-    (x1, y1) = transformEyeData(x, y, experimentAttributes.get("location"))
-    scotomaLeft = shapes.Circle(x1, y1, scotomaRadius, color=(0, 0, 0))
-    scotomaLeft.draw()
+    scotomaLeft = shapes.Circle(xLeft, yLeft, scotomaRadiusLeft, color=(0, 0, 0))
+    if controlPanel.left_hide_checkbox_var == 0:
+        scotomaLeft.draw()
     drawTags(screenAttributes)
 
 
@@ -120,8 +119,9 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
     drawTags(screenAttributes)
-    scotomaRight = shapes.Circle(x1+separation, y1, scotomaRadius, color=(0, 0, 0))
-    scotomaRight.draw()
+    scotomaRight = shapes.Circle(xRight+separation, yRight, scotomaRadiusRight, color=(0, 0, 0))
+    if controlPanel.right_hide_checkbox_var == 0:
+        scotomaRight.draw()
 
 def setSurfaceCalibrated(dt):
     global surfaceCalibrated
@@ -130,13 +130,9 @@ def setSurfaceCalibrated(dt):
 
 
 def runControlPanel():
+    global controlPanel
     root = tk.Tk()
     controlPanel = ControlPanel(root)
-    def getValues():
-        global scotomaLeftRadius
-        scotomaLeftRadius = controlPanel.left_size_slider
-        root.after(1000,getValues)
-
     root.mainloop()
 # Launch the simulation screen ----------------------------------------------------------
 
@@ -157,20 +153,21 @@ def launchSimulation(screenAttributes, experimentAttributes):
     @simulationWindow.event
     def on_draw():
         global surfaceCalibrated
-        if surfaceCalibrated == False:
-            x,y = 0,0
-        if surfaceCalibrated == True:
-            (x,y)=getGazePosition(experimentAttributes.get("sub"),"surface")
-        x=x*screen_x
-        y=y*screen_y
-        drawAll(x, y, screenAttributes, experimentAttributes)
-    """
-    @simulationWindow.event
-    def on_mouse_motion(thisX, thisY, dx, dy):
-        global x, y
-        x = thisX #* screen_x
-        y = thisY   #screen_y - thisY * screen_y
-    """
+        if experimentAttributes.get("tracker") != "Mouse":
+            if surfaceCalibrated == False:
+                x,y = 0,0
+            if surfaceCalibrated == True:
+                (x,y)=getGazePosition(experimentAttributes.get("sub"),"surface")
+            x=x*screen_x
+            y=y*screen_y
+            drawAll(x, y, screenAttributes, experimentAttributes)
+        """else:
+            @simulationWindow.event
+            def on_mouse_motion(thisX, thisY, dx, dy):
+                global x, y
+                x = thisX #* screen_x
+                y = thisY   #screen_y - thisY * screen_y
+"""
     pyglet.clock.schedule_once(setSurfaceCalibrated, 5)
 
     pyglet.app.run()

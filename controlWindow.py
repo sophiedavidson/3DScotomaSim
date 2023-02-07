@@ -44,6 +44,7 @@ class LocationSelector:
             self.root.event_generate("<SyncEvent>", x=x, y=y)
 
 
+
 """
 ControlPanel Class: Defines a control panel window containing controls for size,relative location and visibility of the
 scotoma simulated for each eye as well as the offset between the two eyes (ie the apparent z distance of the scotoma).
@@ -62,11 +63,9 @@ class ControlPanel:
         self.left_label.pack()
         # 2D location selector (left)
         self.left_location_slider = LocationSelector(self.left_frame)
-        # Opacity slider (Left)
-        self.left_opacity_slider = tk.Scale(self.left_frame, from_=0, to=100, orient="horizontal", label="Opacity")
-        self.left_opacity_slider.pack()
+
         # Size slider (left)
-        self.left_size_slider = tk.Scale(self.left_frame, from_=0, to=100, orient="horizontal", label="Size")
+        self.left_size_slider = tk.Scale(self.left_frame, from_=0, to=200, orient="horizontal", label="Size")
         self.left_size_slider.pack()
         # Determines whether the left side scotoma should be hidden or shown.
         self.left_hide_checkbox_var = tk.IntVar()
@@ -80,11 +79,9 @@ class ControlPanel:
         self.right_label.pack()
         # 2D location selector (right)
         self.right_location_slider = LocationSelector(self.right_frame)
-        # Opacity slider (right)
-        self.right_opacity_slider = tk.Scale(self.right_frame, from_=0, to=100, orient="horizontal", label="Opacity")
-        self.right_opacity_slider.pack()
+
         # Size slider (right)
-        self.right_size_slider = tk.Scale(self.right_frame, from_=0, to=100, orient="horizontal", label="Size")
+        self.right_size_slider = tk.Scale(self.right_frame, from_=0, to=200, orient="horizontal", label="Size")
         self.right_size_slider.pack()
         # Determines whether the right side scotoma should be hidden or shown
         self.right_hide_checkbox_var = tk.IntVar()
