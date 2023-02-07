@@ -35,6 +35,7 @@ tags = (tag1, tag2, tag3, tag4)
 # Background Image
 backgroundImg = pyglet.resource.image("media/background.jpg")
 background = pyglet.sprite.Sprite(backgroundImg, 0, 0)
+
 # All Screen Details
 screenAttributes = {"ScreenSize": screenSize,
                     "AprilTagSize": aprilTagSize,
@@ -45,26 +46,22 @@ screenAttributes = {"ScreenSize": screenSize,
 
 # Main Program ----------------------------------------------------------------------------------
 def main():
+    # Ask for the tracker type ie remote or local
     response = launchDialogue()
-    experimentAttributes = {"name": response[0],
-                            "age": response[1],
-                            "radius": response[2],
-                            "location": response[3],
-                            "tracker": response[4],
-                            "separation": response[5]}
+    experimentAttributes = {"tracker": response}
 
-    sub = None
+    # If remote, get IP and port details, and launch the connection
     if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":
-        print("remote")
         remoteDetails = dialogueRemote()
         sub = launchConnection(remoteDetails)
         experimentAttributes["sub"] = sub
-
+    # If local, use defaults, and launch connection
     if experimentAttributes.get("tracker") == "Pupil Labs Core Local":
         localDetails = ("127.0.0.1", "50020")
         sub = launchConnection(localDetails)
         experimentAttributes["sub"] = sub
 
+    # run the simulation using the defined parameters
     launchSimulation(screenAttributes, experimentAttributes)
 
 
