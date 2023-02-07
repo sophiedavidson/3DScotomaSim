@@ -73,7 +73,7 @@ def transformEyeData(x, y, eye):
         (xAdd,yAdd)= (int(locationString[0]), int(locationString[1]))
 
     x=x+xAdd
-    y=y+yAdd
+    y=y-yAdd
     return x, y
 
 
@@ -109,8 +109,8 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
     scotomaLeft = shapes.Circle(xLeft, yLeft, scotomaRadiusLeft, color=(0, 0, 0))
-    if controlPanel.left_hide_checkbox_var == 0:
-        scotomaLeft.draw()
+    #if controlPanel.left_hide_checkbox_var == 0:
+    scotomaLeft.draw()
     drawTags(screenAttributes)
 
 
@@ -120,8 +120,8 @@ def drawAll(x, y, screenAttributes, experimentAttributes):
     glClear(GL_COLOR_BUFFER_BIT)
     drawTags(screenAttributes)
     scotomaRight = shapes.Circle(xRight+separation, yRight, scotomaRadiusRight, color=(0, 0, 0))
-    if controlPanel.right_hide_checkbox_var == 0:
-        scotomaRight.draw()
+    #if controlPanel.right_hide_checkbox_var == 0:
+    scotomaRight.draw()
 
 def setSurfaceCalibrated(dt):
     global surfaceCalibrated

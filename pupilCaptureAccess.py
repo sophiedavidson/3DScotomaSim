@@ -3,7 +3,6 @@
 
 # Imports --------------------------------------------------------------------------------------------
 import zmq
-import socket
 from msgpack import loads
 
 

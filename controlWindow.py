@@ -69,8 +69,7 @@ class ControlPanel:
         self.left_size_slider.pack()
         # Determines whether the left side scotoma should be hidden or shown.
         self.left_hide_checkbox_var = tk.IntVar()
-        self.left_hide_checkbox = tk.Checkbutton(self.left_frame, text="Hide", variable=self.left_hide_checkbox_var)
-        self.left_hide_checkbox.pack()
+
 
         # Right side controls
         self.right_frame = tk.Frame(root)
@@ -85,8 +84,6 @@ class ControlPanel:
         self.right_size_slider.pack()
         # Determines whether the right side scotoma should be hidden or shown
         self.right_hide_checkbox_var = tk.IntVar()
-        self.right_hide_checkbox = tk.Checkbutton(self.right_frame, text="Hide", variable=self.right_hide_checkbox_var)
-        self.right_hide_checkbox.pack()
 
         # Central controls
         self.offset_slider = tk.Scale(from_=-100, to=100, orient="horizontal", label="Left/Right Offset")
