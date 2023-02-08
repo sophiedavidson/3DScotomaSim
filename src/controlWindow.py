@@ -88,10 +88,8 @@ class ControlPanel:
         # Central controls
         self.offset_slider = tk.Scale(from_=-100, to=100, orient="horizontal", label="Left/Right Offset")
         self.offset_slider.pack()
-        # TODO - Sync checkbox doesn't work
-        # self.sync_checkbox_var = tk.IntVar()
-        # self.sync_checkbox = tk.Checkbutton(root, text="Synchronize", variable=self.sync_checkbox_var)
-        # self.sync_checkbox.pack()
+        self.font_size_slider=tk.Scale(from_=1, to=100, orient="horizontal", label="Text Size")
+        self.font_size_slider.pack()
 
 
 

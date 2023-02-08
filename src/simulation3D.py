@@ -51,29 +51,41 @@ def drawTags(screenAttributes):
 # Draws all the foreground components
 def drawAll(currentX, currentY, screenAttributes):
     # get details required
+    global controlPanel
+
     (xLeft, yLeft) = transformEyeData(currentX, currentY, 0)
     (xRight, yRight) = transformEyeData(currentX, currentY, 1)
-    global controlPanel
-    background = screenAttributes.get("Background")
-    background.scale = 0.5
+
     scotomaRadiusLeft = controlPanel.left_size_slider.get()
     scotomaRadiusRight = controlPanel.right_size_slider.get()
+
     separation = controlPanel.offset_slider.get()
+
+    scotomaLeft = shapes.Circle(xLeft, yLeft, scotomaRadiusLeft, color=(0, 0, 0))
+    scotomaRight = shapes.Circle(xRight+separation, yRight, scotomaRadiusRight, color=(0, 0, 0))
+
+    textSize= controlPanel.font_size_slider.get()
+    label = pyglet.text.Label(text="Testing 123 Testing",
+                              color=(0,0,0,255),
+                              font_size=textSize,
+                              x=600,
+                              y=400,
+                              anchor_x="center")
 
     # Left Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
-    scotomaLeft = shapes.Circle(xLeft, yLeft, scotomaRadiusLeft, color=(0, 0, 0))
-    scotomaLeft.draw()
     drawTags(screenAttributes)
+    label.draw()
+    scotomaLeft.draw()
 
     # Right Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
     drawTags(screenAttributes)
-    scotomaRight = shapes.Circle(xRight+separation, yRight, scotomaRadiusRight, color=(0, 0, 0))
+    label.draw()
     scotomaRight.draw()
 
 
