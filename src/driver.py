@@ -47,8 +47,9 @@ screenAttributes = {"ScreenSize": screenSize,
 # Main Program ----------------------------------------------------------------------------------
 def main():
     # Ask for the tracker type ie remote or local
-    response = launchDialogue()
-    experimentAttributes = {"tracker": response}
+    (tracker,stimulus) = launchDialogue()
+    experimentAttributes = {"tracker": tracker,
+                            "stimulus": stimulus}
 
     # If remote, get IP and port details, and launch the connection
     if experimentAttributes.get("tracker") == "Pupil Labs Core Remote":

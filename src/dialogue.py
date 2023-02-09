@@ -28,7 +28,9 @@ def launchDialogue():
             showMessage("Please select a tracker")
             root.mainloop()
 
-        thisInfo = device
+        stimulus = text_entry.get()
+
+        thisInfo = (device, stimulus)
 
         # close window and return
         root.destroy()
@@ -38,7 +40,7 @@ def launchDialogue():
     # Generating the dialogue window
     root = tk.Tk()
     root.title("Configurations")
-    root.geometry("200x100")
+    root.geometry("300x100")
 
     # Select Eye Tracker Drop Down
     device_label = ttk.Label(root, text="Select Tracker")
@@ -49,9 +51,14 @@ def launchDialogue():
     device_dropdown = ttk.OptionMenu(root, device_var, *deviceOptions)
     device_dropdown.grid(row=3, column=1)
 
+    text_entry_label = ttk.Label(root, text="Text Stimulus")
+    text_entry_label.grid(row=4, column=0)
+    text_entry = ttk.Entry(root)
+    text_entry.grid(row=4, column=1)
+
     # Submit button
     submit_button = ttk.Button(root, text="Submit", command=get_input)
-    submit_button.grid(row=8, column=0)
+    submit_button.grid(row=5, column=0)
 
     root.mainloop()
 

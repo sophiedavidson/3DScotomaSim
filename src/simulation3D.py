@@ -49,7 +49,7 @@ def drawTags(screenAttributes):
 
 
 # Draws all the foreground components
-def drawAll(currentX, currentY, screenAttributes):
+def drawAll(currentX, currentY, screenAttributes, experimentAttributes):
     # get details required
     global controlPanel
 
@@ -64,29 +64,45 @@ def drawAll(currentX, currentY, screenAttributes):
     scotomaLeft = shapes.Circle(xLeft, yLeft, scotomaRadiusLeft, color=(0, 0, 0))
     scotomaRight = shapes.Circle(xRight+separation, yRight, scotomaRadiusRight, color=(0, 0, 0))
 
+    textStimulus = experimentAttributes.get("stimulus")
     textSize= controlPanel.font_size_slider.get()
-    label = pyglet.text.Label(text="Testing 123 Testing",
+    label = pyglet.text.Label(text=textStimulus,
                               color=(0,0,0,255),
                               font_size=textSize,
                               x=600,
                               y=400,
                               anchor_x="center")
 
+    circleStim = shapes.Circle(300, 100, 40,color=(255,0,0,255))
+
+    starStim1 = shapes.Star(600+separation,100,60,40,color = (0,255,0,255),num_spikes =5)
+    starStim2 = shapes.Star(600,100,60,40,color = (0,255,0,255),num_spikes=5)
+
+    squareStim1 = shapes.Rectangle(900, 100, 80,80, color=(0,0,255,255))
+    squareStim2 = shapes.Rectangle(900+separation+10,100,80,80, color=(0,0,255,255))
+
     # Left Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_LEFT)
     glClear(GL_COLOR_BUFFER_BIT)
+    circleStim.draw()
+    starStim1.draw()
     drawTags(screenAttributes)
     label.draw()
     scotomaLeft.draw()
+    squareStim1.draw()
+
 
     # Right Eye
     glClearColor(1, 1, 1, 1)
     glDrawBuffer(GL_BACK_RIGHT)
     glClear(GL_COLOR_BUFFER_BIT)
+    circleStim.draw()
+    starStim2.draw()
     drawTags(screenAttributes)
     label.draw()
     scotomaRight.draw()
+    squareStim2.draw()
 
 
 def setSurfaceCalibrated(dt):
@@ -122,7 +138,7 @@ def launchSimulation(screenAttributes, experimentAttributes):
 
         x = x*screen_x
         y = y*screen_y
-        drawAll(x, y, screenAttributes)
+        drawAll(x, y, screenAttributes, experimentAttributes)
 
     pyglet.clock.schedule_once(setSurfaceCalibrated, 5)
 
