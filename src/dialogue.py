@@ -1,4 +1,12 @@
+"""
+dialogue.py
+Author: Sophie Davidson
+Date: 2023
 
+The dialogue module contains all dialogues to be shown to the user including the error message dialogue, the
+experiment information dialogue and the remote details dialogue.
+
+"""
 # Imports
 import tkinter as tk
 from tkinter import ttk
@@ -15,7 +23,7 @@ def showMessage(message):
     messagebox.showerror("Configuration", message)
 
 
-# ---- Make the Dialogue Box -------------------------------------------------------------------------------------------
+# The initial experiment details dialogue shown to the user
 def launchDialogue():
     global thisInfo
 
@@ -27,7 +35,6 @@ def launchDialogue():
         if device == "Tracker...":
             showMessage("Please select a tracker")
             root.mainloop()
-
         stimulus = text_entry.get()
 
         thisInfo = (device, stimulus)
@@ -35,7 +42,7 @@ def launchDialogue():
         # close window and return
         root.destroy()
 
-        return input
+        return input # TODO - why does this work with input, swap to thisInfo
 
     # Generating the dialogue window
     root = tk.Tk()
@@ -51,6 +58,7 @@ def launchDialogue():
     device_dropdown = ttk.OptionMenu(root, device_var, *deviceOptions)
     device_dropdown.grid(row=3, column=1)
 
+    # Text stimulus entry box
     text_entry_label = ttk.Label(root, text="Text Stimulus")
     text_entry_label.grid(row=4, column=0)
     text_entry = ttk.Entry(root)

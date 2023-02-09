@@ -1,3 +1,11 @@
+"""
+simulation3D.py
+Author: Sophie Davidson
+Date: 2023
+
+This module generates the simulation screen, and on a seperate thread, the control panel.
+
+"""
 # simulation.py
 # Sophie Davidson for IMT Atlantique, 2022
 
@@ -53,17 +61,16 @@ def drawAll(currentX, currentY, screenAttributes, experimentAttributes):
     # get details required
     global controlPanel
 
+    # Scotoma details
     (xLeft, yLeft) = transformEyeData(currentX, currentY, 0)
     (xRight, yRight) = transformEyeData(currentX, currentY, 1)
-
     scotomaRadiusLeft = controlPanel.left_size_slider.get()
     scotomaRadiusRight = controlPanel.right_size_slider.get()
-
     separation = controlPanel.offset_slider.get()
-
     scotomaLeft = shapes.Circle(xLeft, yLeft, scotomaRadiusLeft, color=(0, 0, 0))
     scotomaRight = shapes.Circle(xRight+separation, yRight, scotomaRadiusRight, color=(0, 0, 0))
 
+    #Stimulus details
     textStimulus = experimentAttributes.get("stimulus")
     textSize= controlPanel.font_size_slider.get()
     label = pyglet.text.Label(text=textStimulus,
@@ -105,6 +112,8 @@ def drawAll(currentX, currentY, screenAttributes, experimentAttributes):
     squareStim2.draw()
 
 
+# This function is called after the experiment screen has been opened for 5 seconds,
+# once the tracker has had time to recognise the surface.
 def setSurfaceCalibrated(dt):
     global surfaceCalibrated
     surfaceCalibrated = True
@@ -122,8 +131,10 @@ def runControlPanel():
 def launchSimulation(screenAttributes, experimentAttributes):
     global surfaceCalibrated
     surfaceCalibrated = False
+    # Start the control panel on a seperate thread.
     t1 = Thread(target=runControlPanel)
     t1.start()
+
     simulationWindow = createWindow(1)
     simulationWindow.set_mouse_visible(False)
     (screen_x, screen_y) = screenAttributes.get("ScreenSize")
