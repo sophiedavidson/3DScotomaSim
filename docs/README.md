@@ -43,3 +43,20 @@ To check that the packages have installed, use
 ``` 
 py -m pip freeze
 ```
+
+## .exe File Generation
+To create a new .exe, first install pyinstaller using 
+
+```
+py -m pip install pyinstaller
+```
+then cd into the source directory, you may need to move all images in media to the src folder, and change the references to these images in driver.py. 
+In dialogue.py you may also need to change exit() into sys.quit()
+Finally, run the following script in the terminal.
+
+```
+py -m PyInstaller driver.py --onefile --windo
+wed --add-data "tag1.jpg;." --add-data "tag2.jpg;." --add-data "tag3.jpg;." --add-data "ta
+g4.jpg;." --hidden-import "pyglet" --hidden-import "zmq" --hidden-import "msgpck"
+```
+
