@@ -15,7 +15,7 @@ Adjustable asymmetric scotoma created using 3D active glasses and the Pupil Core
 
 ## To Open Application (Non Developer) 
 
-Download the .exe application file then double click to open the application. 
+Download the .exe application file then double click to open the application (dist/Asymmetric Scotoma Simulator.exe)
 
 Note that you may need to "Trust" the file first once it has been downloaded. 
 
