@@ -15,7 +15,7 @@ Adjustable asymmetric scotoma created using 3D active glasses and the Pupil Core
 
 ## To Open Application (Non Developer) 
 
-Download the .exe application file then double click to open the application. 
+Download the .exe application file then double click to open the application (dist/Asymmetric Scotoma Simulator.exe)
 
 Note that you may need to "Trust" the file first once it has been downloaded. 
 
@@ -43,3 +43,20 @@ To check that the packages have installed, use
 ``` 
 py -m pip freeze
 ```
+
+## .exe File Generation
+To create a new .exe, first install pyinstaller using 
+
+```
+py -m pip install pyinstaller
+```
+then cd into the source directory, you may need to move all images in media to the src folder, and change the references to these images in driver.py. 
+In dialogue.py you may also need to change exit() into sys.quit()
+Finally, run the following script in the terminal.
+
+```
+py -m PyInstaller driver.py --onefile --windo
+wed --add-data "tag1.jpg;." --add-data "tag2.jpg;." --add-data "tag3.jpg;." --add-data "ta
+g4.jpg;." --hidden-import "pyglet" --hidden-import "zmq" --hidden-import "msgpck"
+```
+
