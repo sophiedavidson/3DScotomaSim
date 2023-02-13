@@ -11,6 +11,7 @@ experiment information dialogue and the remote details dialogue.
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import sys
 
 # Globals
 global thisInfo, remoteInfo
