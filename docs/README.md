@@ -5,6 +5,7 @@ Adjustable asymmetric scotoma created using 3D active glasses and the Pupil Core
  
  **Author**: Sophie Davidson     
  **Purpose**:  Generate a simulated asymmetric scotoma.
+ 
  **Context**: This project was completed as part of the Nicholas Baudin internships in France program. Thank you for the support of my host institution, IMT Atlantique, and Orthoptica.
  
 **Dependencies:** 
